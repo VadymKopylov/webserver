@@ -1,5 +1,7 @@
 package com.kopylov.webserver.server;
 
+import com.kopylov.webserver.server.server.Server;
+
 import java.io.IOException;
 
 public class Starter {

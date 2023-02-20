@@ -1,11 +1,12 @@
 package com.kopylov.webserver.server.request;
 
+import com.kopylov.webserver.server.entity.Request;
+import com.kopylov.webserver.server.exceptions.ServerException;
 import com.kopylov.webserver.server.reader.ContentReader;
 import com.kopylov.webserver.server.writer.ResponseWriter;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 
 public class RequestHandler {
@@ -20,9 +21,13 @@ public class RequestHandler {
     }
 
     public void handle() throws IOException {
-        Request request = RequestParser.parse(socketReader);
-        File pathToContent = ContentReader.read(request, webAppPath);
-        ResponseWriter.writeResponse(pathToContent, socketWriter);
+        try {
+            Request request = RequestParser.parse(socketReader);
+            byte[] content = ContentReader.read(request, webAppPath);
+            ResponseWriter.writeResponse(content, socketWriter);
+        }catch (ServerException e){
+                ResponseWriter.writeError(socketWriter,e.getStatusCode());
+        }
     }
 }
 

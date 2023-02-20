@@ -1,12 +1,10 @@
-package com.kopylov.webserver.server.request;
-
-import com.kopylov.webserver.server.entity.HttpMethod;
+package com.kopylov.webserver.server.entity;
 
 import java.util.Map;
 
 public class Request {
     String uri;
-    Map<String,String> headers;
+    Map<String, String> headers;
     HttpMethod method;
 
     public String getUri() {

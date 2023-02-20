@@ -1,4 +1,4 @@
-package com.kopylov.webserver.server;
+package com.kopylov.webserver.server.server;
 
 import com.kopylov.webserver.server.request.RequestHandler;
 
@@ -10,7 +10,7 @@ public class Server {
     private int port;
     private String webAppPath;
 
-    void start() throws IOException {
+    public void start() throws IOException {
         try (ServerSocket serverSocket = new ServerSocket(port)){
             while (true) {
                 try (Socket socket = serverSocket.accept();
