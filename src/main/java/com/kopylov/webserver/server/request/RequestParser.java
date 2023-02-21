@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import static com.kopylov.webserver.server.entity.StatusCode.*;
 
 public class RequestParser {
-    public static Request parse(BufferedReader bufferedReader) throws IOException {
+    static Request parse(BufferedReader bufferedReader) throws IOException {
         Request request = new Request();
         List<String> lines = collectRequest(bufferedReader);
         injectUriAndMethod(lines, request);
@@ -26,7 +26,7 @@ public class RequestParser {
         String httpMethodLine = line.substring(0, line.indexOf(" "));
         request.setUri(requestUri);
         HttpMethod httpMethod = HttpMethod.valueOf(httpMethodLine);
-        if (httpMethod.equals(HttpMethod.POST)) {
+        if (!httpMethod.equals(HttpMethod.GET)) {
             throw new ServerException(METHOD_NOT_ALLOWED);
         }
         request.setMethod(httpMethod);

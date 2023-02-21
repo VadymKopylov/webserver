@@ -3,6 +3,9 @@ package com.kopylov.werbserver;
 import com.kopylov.webserver.server.entity.HttpMethod;
 import com.kopylov.webserver.server.entity.Request;
 
+import com.kopylov.webserver.server.entity.StatusCode;
+import com.kopylov.webserver.server.exceptions.ServerException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +14,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.kopylov.webserver.server.reader.ContentReader.read;
 import static com.kopylov.webserver.server.request.RequestParser.*;
+import static com.kopylov.webserver.server.writer.ResponseWriter.writeError;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RequestHandlerTest {
@@ -25,7 +30,6 @@ public class RequestHandlerTest {
         request = new Request();
         File file = new File("src/main/resources/Text.txt");
         bufferedReader = new BufferedReader(new FileReader(file));
-
     }
 
     @Test
@@ -76,5 +80,35 @@ public class RequestHandlerTest {
         List<String> actualList = collectRequest(bufferedReader);
 
         assertEquals(lines, actualList);
+    }
+
+    @Test
+    public void testInjectUriAndMethodThrowsServerExceptionWhenHttpMethodNotAllowed() {
+        ServerException serverException = Assertions.assertThrows(ServerException.class, () -> {
+            lines.add("POST /index.html HTTP/1.1");
+            request.setMethod(HttpMethod.valueOf("POST"));
+            Request request = new Request();
+            injectUriAndMethod(lines, request);
+        });
+        String actualException = serverException.getStatusCode().getCode() + " " + serverException.getStatusCode().getStatus();
+        String expectedException = "405 Method not allowed";
+        assertEquals(actualException, expectedException);
+    }
+
+    @Test
+    public void testReadThrowsServerExceptionWhenFileNotFound() {
+        ServerException serverException = Assertions.assertThrows(ServerException.class, () -> {
+            String wrongWebAppPath = "src/main";
+            request.setUri("/Text.txt");
+            read(request, wrongWebAppPath);
+        });
+        String actualException = serverException.getStatusCode().getCode() + " " + serverException.getStatusCode().getStatus();
+        String expectedException = "404 Not found";
+        assertEquals(actualException, expectedException);
+    }
+
+    @Test
+    public void testResponseWriterCatchServerExceptionAndWriteCorrectMessage() {
+
     }
 }
