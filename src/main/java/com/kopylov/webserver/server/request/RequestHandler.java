@@ -25,8 +25,8 @@ public class RequestHandler {
             Request request = RequestParser.parse(socketReader);
             byte[] content = ContentReader.read(request, webAppPath);
             ResponseWriter.writeResponse(content, socketWriter);
-        }catch (ServerException e){
-                ResponseWriter.writeError(socketWriter,e.getStatusCode());
+        } catch (ServerException e) {
+            ResponseWriter.writeError(socketWriter, e.getStatusCode());
         }
     }
 }
