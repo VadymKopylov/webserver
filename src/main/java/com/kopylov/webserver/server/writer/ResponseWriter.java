@@ -6,18 +6,14 @@ import java.io.*;
 
 public class ResponseWriter {
     public static void writeResponse(InputStream content, OutputStream outputStream) throws IOException {
-        outputStream.write("HTTP/1.1 200 OK\r\n".getBytes());
-        outputStream.write("\r\n".getBytes());
-        byte[] arr = new byte[4096];
-        int count;
-        while ((count = content.read(arr)) != -1) {
-            outputStream.write(count);
-        }
-        outputStream.write("\r\n\r\n".getBytes());
-
-
-        outputStream.flush();
-        content.close();
+        BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+        bufferedWriter.write("HTTP/1.1 200 OK");
+        bufferedWriter.newLine();
+        bufferedWriter.newLine();
+        bufferedWriter.flush();
+        byte[] bytes = content.readAllBytes();
+        outputStream.write(bytes);
+        bufferedWriter.close();
         outputStream.close();
     }
 
