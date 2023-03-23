@@ -5,19 +5,20 @@ import com.kopylov.webserver.server.exceptions.ServerException;
 
 import java.io.*;
 
-import static com.kopylov.webserver.server.entity.StatusCode.*;
+import static com.kopylov.webserver.server.entity.StatusCode.NOT_FOUND;
 
 public class ContentReader {
-    public static byte[] read(Request request, String webAppPath) throws IOException {
-        File pathToFile = new File(webAppPath, request.getUri());
-        int fileLength = (int) pathToFile.length();
-        byte[] contentArray = new byte[fileLength];
+    private final String webAppPath;
 
-        try (FileInputStream fileInputStream = new FileInputStream(pathToFile)) {
-            fileInputStream.read(contentArray);
+    public ContentReader(String webAppPath) {
+        this.webAppPath = webAppPath;
+    }
+
+    public InputStream read(Request request) {
+        try {
+            return new FileInputStream(new File(webAppPath, request.getUri()));
         } catch (FileNotFoundException e) {
-            throw new ServerException(NOT_FOUND);
+            throw new ServerException(NOT_FOUND, e);
         }
-        return contentArray;
     }
 }

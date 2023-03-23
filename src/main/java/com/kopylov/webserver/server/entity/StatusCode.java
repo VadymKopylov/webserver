@@ -2,7 +2,8 @@ package com.kopylov.webserver.server.entity;
 
 public enum StatusCode {
     NOT_FOUND(404, "Not found"),
-    METHOD_NOT_ALLOWED(405, "Method not allowed");
+    METHOD_NOT_ALLOWED(405, "Method not allowed"),
+    OK (200,"Ok");
 
     private final int code;
     private final String status;

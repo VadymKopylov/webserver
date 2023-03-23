@@ -1,5 +1,6 @@
 package com.kopylov.webserver.server.server;
 
+import com.kopylov.webserver.server.reader.ContentReader;
 import com.kopylov.webserver.server.request.RequestHandler;
 
 import java.io.*;
@@ -11,13 +12,14 @@ public class Server {
     private String webAppPath;
 
     public void start() throws IOException {
+        ContentReader contentReader = new ContentReader(webAppPath);
         try (ServerSocket serverSocket = new ServerSocket(port)){
             while (true) {
                 try (Socket socket = serverSocket.accept();
-                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                     BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))) {
+                     InputStream input = socket.getInputStream();
+                     OutputStream output = socket.getOutputStream();) {
 
-                    RequestHandler requestHandler = new RequestHandler(bufferedReader, bufferedWriter, webAppPath);
+                    RequestHandler requestHandler = new RequestHandler(input, output, contentReader);
                     requestHandler.handle();
                 }
             }

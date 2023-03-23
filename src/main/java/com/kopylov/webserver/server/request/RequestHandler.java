@@ -5,25 +5,24 @@ import com.kopylov.webserver.server.exceptions.ServerException;
 import com.kopylov.webserver.server.reader.ContentReader;
 import com.kopylov.webserver.server.writer.ResponseWriter;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
+import java.io.*;
 
 public class RequestHandler {
-    private BufferedReader socketReader;
-    private BufferedWriter socketWriter;
-    private String webAppPath;
+    private InputStream socketReader;
+    private OutputStream socketWriter;
+    private ContentReader contentReader;
 
-    public RequestHandler(BufferedReader bufferedReader, BufferedWriter bufferedWriter, String webAppPath) {
-        this.socketReader = bufferedReader;
-        this.socketWriter = bufferedWriter;
-        this.webAppPath = webAppPath;
+
+    public RequestHandler(InputStream inputStream, OutputStream outputStream, ContentReader contentReader) {
+        this.socketReader = inputStream;
+        this.socketWriter = outputStream;
+        this.contentReader = contentReader;
     }
 
     public void handle() throws IOException {
         try {
             Request request = RequestParser.parse(socketReader);
-            byte[] content = ContentReader.read(request, webAppPath);
+            InputStream content = contentReader.read(request);
             ResponseWriter.writeResponse(content, socketWriter);
         } catch (ServerException e) {
             ResponseWriter.writeError(socketWriter, e.getStatusCode());

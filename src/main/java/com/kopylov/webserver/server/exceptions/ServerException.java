@@ -9,6 +9,11 @@ public class ServerException extends RuntimeException {
         this.statusCode = statusCode;
     }
 
+    public ServerException(StatusCode statusCode, Throwable cause) {
+        super(cause);
+        this.statusCode = statusCode;
+    }
+
     public StatusCode getStatusCode() {
         return statusCode;
     }

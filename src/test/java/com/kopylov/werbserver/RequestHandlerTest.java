@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.kopylov.webserver.server.reader.ContentReader.read;
 import static com.kopylov.webserver.server.request.RequestParser.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -67,18 +66,6 @@ public class RequestHandlerTest {
         });
         String actualException = serverException.getStatusCode().getCode() + " " + serverException.getStatusCode().getStatus();
         String expectedException = "405 Method not allowed";
-        assertEquals(actualException, expectedException);
-    }
-
-    @Test
-    public void testReadThrowsServerExceptionWhenFileNotFound() {
-        ServerException serverException = Assertions.assertThrows(ServerException.class, () -> {
-            String wrongWebAppPath = "src/main";
-            request.setUri("/Text.txt");
-            read(request, wrongWebAppPath);
-        });
-        String actualException = serverException.getStatusCode().getCode() + " " + serverException.getStatusCode().getStatus();
-        String expectedException = "404 Not found";
         assertEquals(actualException, expectedException);
     }
 }

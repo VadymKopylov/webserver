@@ -6,18 +6,22 @@ import com.kopylov.webserver.server.exceptions.ServerException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.kopylov.webserver.server.entity.StatusCode.*;
 
 public class RequestParser {
-    static Request parse(BufferedReader bufferedReader) throws IOException {
+    static Request parse(InputStream inputStream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         Request request = new Request();
         List<String> lines = collectRequest(bufferedReader);
         injectUriAndMethod(lines, request);
         injectHeaders(lines, request);
         return request;
+
     }
 
     public static void injectUriAndMethod(List<String> lines, Request request) {
