@@ -7,7 +7,7 @@ import java.io.*;
 public class ResponseWriter {
     public static void writeResponse(InputStream content, OutputStream outputStream) throws IOException {
         BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
-        bufferedWriter.write("HTTP/1.1 200 OK");
+        bufferedWriter.write("HTTP/1.1 "+ StatusCode.OK.getStatus());
         bufferedWriter.newLine();
         bufferedWriter.newLine();
         bufferedWriter.flush();
